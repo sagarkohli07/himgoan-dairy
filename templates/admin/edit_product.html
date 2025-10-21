@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Edit Product - Admin{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-pencil"></i> Edit Product</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name (English) *</label>
+                        <input type="text" class="form-control" name="name_en" value="{{ product.name_en }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Product Name (Hindi) *</label>
+                        <input type="text" class="form-control" name="name_hi" value="{{ product.name_hi }}" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price (₹) *</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" name="price" value="{{ product.price }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Stock *</label>
+                            <input type="number" min="0" class="form-control" name="stock" value="{{ product.stock }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description (English)</label>
+                        <textarea class="form-control" name="description_en" rows="2">{{ product.description_en }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description (Hindi)</label>
+                        <textarea class="form-control" name="description_hi" rows="2">{{ product.description_hi }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+                        <input type="url" class="form-control" name="image_url" value="{{ product.image_url }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-control" name="category" value="{{ product.category }}">
+                    </div>
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Update Product
+                        </button>
+                        <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">Current Image</h6>
+            </div>
+            <div class="card-body text-center">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" class="img-fluid rounded" style="max-height: 200px;">
+                {% else %}
+                <i class="bi bi-image" style="font-size: 5rem; color: #ccc;"></i>
+                <p class="text-muted mt-2">No image</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

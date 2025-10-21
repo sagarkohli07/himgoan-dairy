@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Add Product - Admin{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-plus-circle"></i> Add New Product</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name (English) *</label>
+                        <input type="text" class="form-control" name="name_en" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Product Name (Hindi) *</label>
+                        <input type="text" class="form-control" name="name_hi" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price (₹) *</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" name="price" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Stock *</label>
+                            <input type="number" min="0" class="form-control" name="stock" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description (English)</label>
+                        <textarea class="form-control" name="description_en" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description (Hindi)</label>
+                        <textarea class="form-control" name="description_hi" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+                        <input type="url" class="form-control" name="image_url">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-control" name="category">
+                    </div>
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-save"></i> Save Product
+                        </button>
+                        <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

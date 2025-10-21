@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{% if lang == 'hi' %}ट्रैक करें{% else %}Track Order{% endif %} - HimGaon Dairy{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header" style="background: var(--mountain-green); color: white;">
+                <h4 class="mb-0"><i class="bi bi-search"></i> {% if lang == 'hi' %}ऑर्डर ट्रैक करें{% else %}Track Your Order{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}ऑर्डर आईडी{% else %}Order ID{% endif %} *</label>
+                        <input type="text" class="form-control" name="order_id" 
+                               placeholder="{% if lang == 'hi' %}उदाहरण: HGD2025001{% else %}Example: HGD2025001{% endif %}" 
+                               required style="text-transform: uppercase;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}फोन नंबर{% else %}Phone Number{% endif %} *</label>
+                        <input type="tel" class="form-control" name="phone" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> {% if lang == 'hi' %}खोजें{% else %}Track Order{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if order %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #2D5016, #228B22); color: white;">
+                <h5 class="mb-0">{% if lang == 'hi' %}ऑर्डर विवरण{% else %}Order Details{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>{% if lang == 'hi' %}ऑर्डर ID:{% else %}Order ID:{% endif %}</strong><br>
+                        <span class="h5 text-primary">{{ order.order_id }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>{% if lang == 'hi' %}तारीख:{% else %}Date:{% endif %}</strong><br>
+                        {{ order.order_date.strftime('%d %b %Y, %I:%M %p') }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6><strong>{% if lang == 'hi' %}स्थिति:{% else %}Status:{% endif %}</strong></h6>
+                    {% if order.status == 'Pending' %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-clock-history"></i> <strong>{% if lang == 'hi' %}लंबित{% else %}Pending{% endif %}</strong><br>
+                            {% if lang == 'hi' %}आपका ऑर्डर समीक्षा के अधीन है।{% else %}Your order is under review.{% endif %}
+                        </div>
+                    {% elif order.status == 'Accepted' %}
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill"></i> <strong>{% if lang == 'hi' %}स्वीकार{% else %}Accepted{% endif %}</strong><br>
+                            {% if lang == 'hi' %}आपका ऑर्डर स्वीकार कर लिया गया है।{% else %}Your order has been accepted.{% endif %}
+                        </div>
+                    {% elif order.status == 'Rejected' %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-x-circle-fill"></i> <strong>{% if lang == 'hi' %}अस्वीकार{% else %}Rejected{% endif %}</strong><br>
+                            {% if lang == 'hi' %}आपका ऑर्डर अस्वीकार कर दिया गया है।{% else %}Your order has been rejected.{% endif %}
+                        </div>
+                    {% elif order.status == 'Delivered' %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-truck"></i> <strong>{% if lang == 'hi' %}डिलीवर{% else %}Delivered{% endif %}</strong><br>
+                            {% if lang == 'hi' %}आपका ऑर्डर डिलीवर हो गया है।{% else %}Your order has been delivered.{% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if order.admin_notes %}
+                    <div class="mt-3">
+                        <strong>{% if lang == 'hi' %}एडमिन नोट:{% else %}Admin Note:{% endif %}</strong>
+                        <p class="text-muted">{{ order.admin_notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <h6><strong>{% if lang == 'hi' %}आइटम:{% else %}Items:{% endif %}</strong></h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'hi' %}उत्पाद{% else %}Product{% endif %}</th>
+                            <th>{% if lang == 'hi' %}मात्रा{% else %}Quantity{% endif %}</th>
+                            <th>{% if lang == 'hi' %}मूल्य{% else %}Price{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{% if lang == 'hi' %}{{ item.product_name_hi }}{% else %}{{ item.product_name_en }}{% endif %}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ "%.0f"|format(item.price * item.quantity) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="text-end">
+                    <strong>{% if lang == 'hi' %}पता:{% else %}Address:{% endif %}</strong>
+                    <p class="text-muted">{{ order.address }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-house-door"></i> {% if lang == 'hi' %}होम{% else %}Home{% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

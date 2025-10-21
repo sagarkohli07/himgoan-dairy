@@ -1,0 +1,8 @@
+venv/
+env/
+__pycache__/
+*.pyc
+*.db
+himgaon_dairy.db
+.DS_Store
+.env

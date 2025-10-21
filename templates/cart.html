@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{% if lang == 'hi' %}कार्ट{% else %}Cart{% endif %} - HimGaon Dairy{% endblock %}
+{% block content %}
+<h2 class="mb-4" style="color: var(--mountain-green);">
+    <i class="bi bi-cart3"></i>
+    {% if lang == 'hi' %}शॉपिंग कार्ट{% else %}Shopping Cart{% endif %}
+</h2>
+
+{% if cart_items %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table">
+                    <thead style="background: var(--mountain-green); color: white;">
+                        <tr>
+                            <th>{% if lang == 'hi' %}उत्पाद{% else %}Product{% endif %}</th>
+                            <th>{% if lang == 'hi' %}मूल्य{% else %}Price{% endif %}</th>
+                            <th>{% if lang == 'hi' %}मात्रा{% else %}Quantity{% endif %}</th>
+                            <th>{% if lang == 'hi' %}उप-योग{% else %}Subtotal{% endif %}</th>
+                            <th>{% if lang == 'hi' %}हटाएं{% else %}Remove{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ item.image_url }}" style="width: 60px; height: 60px; object-fit: cover;" class="rounded me-3">
+                                    <strong>{% if lang == 'hi' %}{{ item.name_hi }}{% else %}{{ item.name_en }}{% endif %}</strong>
+                                </div>
+                            </td>
+                            <td><span class="rupee">₹</span>{{ "%.0f"|format(item.price) }}</td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm quantity-input" 
+                                       style="width: 80px;" value="{{ item.quantity }}" min="1" 
+                                       data-product-id="{{ item.product_id }}">
+                            </td>
+                            <td class="price-tag"><span class="rupee">₹</span>{{ "%.0f"|format(item.price * item.quantity) }}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm remove-item" data-product-id="{{ item.product_id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header" style="background: var(--mountain-green); color: white;">
+                <h5 class="mb-0">{% if lang == 'hi' %}ऑर्डर सारांश{% else %}Order Summary{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>{% if lang == 'hi' %}उप-योग:{% else %}Subtotal:{% endif %}</span>
+                    <strong class="price-tag"><span class="rupee">₹</span>{{ "%.0f"|format(total) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>{% if lang == 'hi' %}डिलीवरी:{% else %}Delivery:{% endif %}</span>
+                    <strong class="text-success">{% if lang == 'hi' %}मुफ़्त{% else %}FREE{% endif %}</strong>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-4">
+                    <h5>{% if lang == 'hi' %}कुल:{% else %}Total:{% endif %}</h5>
+                    <h5 class="price-tag"><span class="rupee">₹</span>{{ "%.0f"|format(total) }}</h5>
+                </div>
+                <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg w-100 mb-2">
+                    <i class="bi bi-credit-card"></i>
+                    {% if lang == 'hi' %}चेकआउट{% else %}Checkout{% endif %}
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-arrow-left"></i>
+                    {% if lang == 'hi' %}खरीदारी जारी रखें{% else %}Continue Shopping{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-cart-x" style="font-size: 5rem; color: #ccc;"></i>
+    <h3 class="mt-3">{% if lang == 'hi' %}कार्ट खाली है{% else %}Your cart is empty{% endif %}</h3>
+    <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">
+        <i class="bi bi-shop"></i> {% if lang == 'hi' %}उत्पाद देखें{% else %}Browse Products{% endif %}
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}
+{% block extra_js %}
+<script>
+document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+        fetch(`/update-cart/${this.dataset.productId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `quantity=${this.value}`
+        }).then(() => location.reload());
+    });
+});
+document.querySelectorAll('.remove-item').forEach(button => {
+    button.addEventListener('click', function() {
+        if (confirm('{% if lang == "hi" %}हटाएं?{% else %}Remove?{% endif %}')) {
+            fetch(`/remove-from-cart/${this.dataset.productId}`, {
+                method: 'POST'
+            }).then(() => location.reload());
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if lang == 'hi' %}ऑर्डर पुष्टि{% else %}Order Confirmation{% endif %} - HimGaon Dairy
+{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+    </div>
+
+    <h2 class="mb-3">
+        {% if lang == 'hi' %}ऑर्डर सफलतापूर्वक रखा गया!{% else %}Order Placed Successfully!{% endif %}
+    </h2>
+    <p class="lead text-muted mb-4">
+        {% if lang == 'hi' %}धन्यवाद, {{ order.customer_name }}{% else %}Thank you, {{ order.customer_name }}{% endif %}
+    </p>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h5 class="card-title mb-4">
+                {% if lang == 'hi' %}ऑर्डर विवरण{% else %}Order Details{% endif %}
+            </h5>
+
+            <div class="alert alert-info">
+                <h5 class="alert-heading">
+                    <i class="bi bi-info-circle"></i>
+                    {% if lang == 'hi' %}अपना ऑर्डर ट्रैक करें{% else %}Track Your Order{% endif %}
+                </h5>
+                <p class="mb-2">
+                    {% if lang == 'hi' %}
+                        अपने ऑर्डर की स्थिति जानने के लिए इनका उपयोग करें:
+                    {% else %}
+                        Use these details to track your order status:
+                    {% endif %}
+                </p>
+                <hr>
+                <p class="mb-1">
+                    <strong>
+                        {% if lang == 'hi' %}ऑर्डर आईडी:{% else %}Order ID:{% endif %}
+                    </strong> 
+                    <span class="badge bg-primary fs-6">{{ order.order_id }}</span>
+                </p>
+                <p class="mb-2">
+                    <strong>
+                        {% if lang == 'hi' %}फोन नंबर:{% else %}Phone Number:{% endif %}
+                    </strong> {{ order.phone }}
+                </p>
+                <a href="{{ url_for('track_order') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-search"></i>
+                    {% if lang == 'hi' %}अभी ट्रैक करें{% else %}Track Now{% endif %}
+                </a>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <strong>{% if lang == 'hi' %}ऑर्डर की तारीख:{% else %}Order Date:{% endif %}</strong>
+                </div>
+                <div class="col-6 text-end">{{ order.order_date.strftime('%B %d, %Y') }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <strong>{% if lang == 'hi' %}कुल राशि:{% else %}Total Amount:{% endif %}</strong>
+                </div>
+                <div class="col-6 text-end">
+                    <span class="text-primary h5"><span class="rupee">₹</span>{{ "%.0f"|format(order.total_amount) }}</span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <strong>{% if lang == 'hi' %}स्थिति:{% else %}Status:{% endif %}</strong>
+                </div>
+                <div class="col-6 text-end">
+                    <span class="badge bg-warning">
+                        {% if lang == 'hi' %}लंबित{% else %}{{ order.status }}{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="text-start">
+                <h6 class="mb-3">
+                    {% if lang == 'hi' %}डिलीवरी का पता:{% else %}Delivery Address:{% endif %}
+                </h6>
+                <p class="text-muted mb-0">{{ order.address }}</p>
+                <p class="text-muted mb-0">
+                    {% if lang == 'hi' %}ईमेल:{% else %}Email:{% endif %} {{ order.email }}
+                </p>
+                <p class="text-muted">
+                    {% if lang == 'hi' %}फोन:{% else %}Phone:{% endif %} {{ order.phone }}
+                </p>
+            </div>
+
+            <hr>
+
+            <div class="text-start">
+                <h6 class="mb-3">
+                    {% if lang == 'hi' %}ऑर्डर किए गए आइटम:{% else %}Items Ordered:{% endif %}
+                </h6>
+                {% for item in order.items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>
+                        {% if lang == 'hi' %}{{ item.product_name_hi }} (x{{ item.quantity }})
+                        {% else %}{{ item.product_name_en }} (x{{ item.quantity }}){% endif %}
+                    </span>
+                    <span><span class="rupee">₹</span>{{ "%.0f"|format(item.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-2">
+            <i class="bi bi-house-door"></i>
+            {% if lang == 'hi' %}होम पेज पर जाएं{% else %}Back to Home{% endif %}
+        </a>
+        <a href="{{ url_for('track_order') }}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-search"></i>
+            {% if lang == 'hi' %}ऑर्डर ट्रैक करें{% else %}Track Order{% endif %}
+        </a>
+    </div>
+</div>
+
+<style>.rupee {font-family: Arial, sans-serif;}</style>
+{% endblock %}

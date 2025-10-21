@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HimGaon Dairy — Pure Milk, Pure Pahad{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --mountain-green: #2D5016;
+            --sky-blue: #87CEEB;
+            --snow-white: #FFFAFA;
+            --earth-brown: #8B4513;
+            --himalayan-blue: #4682B4;
+            --sunset-orange: #FF6347;
+            --pine-green: #228B22;
+        }
+
+        * {
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--sky-blue) 0%, var(--snow-white) 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, transparent 25%, rgba(45, 80, 22, 0.02) 25%, rgba(45, 80, 22, 0.02) 50%, transparent 50%, transparent 75%, rgba(45, 80, 22, 0.02) 75%),
+                linear-gradient(45deg, transparent 25%, rgba(70, 130, 180, 0.02) 25%, rgba(70, 130, 180, 0.02) 50%, transparent 50%, transparent 75%, rgba(70, 130, 180, 0.02) 75%);
+            background-size: 100px 100px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--mountain-green) 0%, var(--pine-green) 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand .hindi {
+            font-size: 1.3rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        .navbar-brand .tagline {
+            font-size: 0.85rem;
+            color: #FFE4B5;
+            font-weight: 400;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--sunset-orange);
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .lang-switcher {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 5px;
+        }
+
+        .lang-switcher a {
+            padding: 5px 12px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .lang-switcher a.active {
+            background: white;
+            color: var(--mountain-green);
+            font-weight: 600;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, var(--mountain-green) 0%, #1a3510 100%);
+            color: white;
+            margin-top: 50px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+        }
+
+        .footer a {
+            color: #FFE4B5;
+            text-decoration: none;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--mountain-green), var(--pine-green));
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--pine-green), var(--mountain-green));
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(45, 80, 22, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--pine-green), #32CD32);
+            border: none;
+            border-radius: 25px;
+        }
+
+        .price-tag {
+            color: var(--sunset-orange);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .rupee {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-mountains"></i>
+                <span class="hindi">हिमगांव डेयरी</span>
+                <span class="d-block">HimGaon Dairy</span>
+                <small class="tagline"><i class="bi bi-heart-fill"></i> Pure Milk, Pure Pahad / शुद्ध दूध, शुद्ध पहाड़</small>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="bi bi-house-door"></i> 
+                            {% if lang == 'hi' %}मुख्य पृष्ठ{% else %}Home{% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('track_order') }}">
+                            <i class="bi bi-search"></i>
+                            {% if lang == 'hi' %}ट्रैक करें{% else %}Track Order{% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link" href="{{ url_for('cart') }}">
+                            <i class="bi bi-cart3"></i> 
+                            {% if lang == 'hi' %}कार्ट{% else %}Cart{% endif %}
+                            <span class="cart-badge" id="cart-count">{{ session.get('cart', [])|length }}</span>
+                        </a>
+                    </li>
+                    {% if session.get('admin_logged_in') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_login') }}">
+                            <i class="bi bi-person-lock"></i> Admin
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item ms-3">
+                        <div class="lang-switcher">
+                            <a href="{{ url_for('set_language', lang='en') }}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                            <a href="{{ url_for('set_language', lang='hi') }}" class="{% if lang == 'hi' %}active{% endif %}">हिं</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer py-4 mt-5">
+        <div class="container text-center">
+            <h5><i class="bi bi-mountains"></i> हिमगांव डेयरी / HimGaon Dairy</h5>
+            <p class="mb-2">
+                <i class="bi bi-heart-fill"></i> Pure Milk, Pure Pahad / शुद्ध दूध, शुद्ध पहाड़
+            </p>
+            <p class="mb-2">
+                पहाड़ों से ताजा, शुद्ध डेयरी उत्पाद<br>
+                Fresh, Pure Dairy Products from the Mountains
+            </p>
+            <div style="height: 2px; background: linear-gradient(90deg, transparent, white, transparent); margin: 1rem 0;"></div>
+            <p class="mb-0">
+                <strong>Copyright © 2025 Sagar Kohli. All Rights Reserved.</strong>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

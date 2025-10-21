@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Orders - Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-list-ul"></i> All Orders</h2>
+    <div class="btn-group" role="group">
+        <a href="{{ url_for('admin_orders', status='all') }}" 
+           class="btn btn-sm {% if status_filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+        <a href="{{ url_for('admin_orders', status='Pending') }}" 
+           class="btn btn-sm {% if status_filter == 'Pending' %}btn-warning{% else %}btn-outline-warning{% endif %}">Pending</a>
+        <a href="{{ url_for('admin_orders', status='Accepted') }}" 
+           class="btn btn-sm {% if status_filter == 'Accepted' %}btn-success{% else %}btn-outline-success{% endif %}">Accepted</a>
+        <a href="{{ url_for('admin_orders', status='Rejected') }}" 
+           class="btn btn-sm {% if status_filter == 'Rejected' %}btn-danger{% else %}btn-outline-danger{% endif %}">Rejected</a>
+        <a href="{{ url_for('admin_orders', status='Delivered') }}" 
+           class="btn btn-sm {% if status_filter == 'Delivered' %}btn-info{% else %}btn-outline-info{% endif %}">Delivered</a>
+    </div>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>{{ order.order_id }}</strong></td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.email }}</td>
+                        <td>{{ order.phone }}</td>
+                        <td>₹{{ "%.0f"|format(order.total_amount) }}</td>
+                        <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if order.status == 'Pending' %}<span class="badge bg-warning">Pending</span>
+                            {% elif order.status == 'Accepted' %}<span class="badge bg-success">Accepted</span>
+                            {% elif order.status == 'Rejected' %}<span class="badge bg-danger">Rejected</span>
+                            {% elif order.status == 'Delivered' %}<span class="badge bg-info">Delivered</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_order_detail', order_id=order.id) }}" class="btn btn-sm btn-info text-white">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info mb-0">
+            <i class="bi bi-info-circle"></i> No orders found for this filter.
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="mt-3">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}

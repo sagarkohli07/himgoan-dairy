@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{% if lang == 'hi' %}चेकआउट{% else %}Checkout{% endif %} - HimGaon Dairy{% endblock %}
+{% block content %}
+<h2 class="mb-4" style="color: var(--mountain-green);">
+    <i class="bi bi-credit-card"></i> {% if lang == 'hi' %}चेकआउट{% else %}Checkout{% endif %}
+</h2>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header" style="background: var(--mountain-green); color: white;">
+                <h5 class="mb-0"><i class="bi bi-person-fill"></i> {% if lang == 'hi' %}डिलीवरी जानकारी{% else %}Delivery Information{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('place_order') }}">
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}पूरा नाम{% else %}Full Name{% endif %} *</label>
+                        <input type="text" class="form-control" name="customer_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}ईमेल{% else %}Email{% endif %} *</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}फोन नंबर (ट्रैकिंग के लिए){% else %}Phone Number (for tracking){% endif %} *</label>
+                        <input type="tel" class="form-control" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% if lang == 'hi' %}पता{% else %}Address{% endif %} *</label>
+                        <textarea class="form-control" name="address" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="bi bi-check-circle"></i> {% if lang == 'hi' %}ऑर्डर करें{% else %}Place Order{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header" style="background: var(--mountain-green); color: white;">
+                <h5 class="mb-0">{% if lang == 'hi' %}सारांश{% else %}Summary{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                {% for item in cart_items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{% if lang == 'hi' %}{{ item.name_hi }}{% else %}{{ item.name_en }}{% endif %} (x{{ item.quantity }})</span>
+                    <span>₹{{ "%.0f"|format(item.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <h5>{% if lang == 'hi' %}कुल:{% else %}Total:{% endif %}</h5>
+                    <h5 class="text-primary">₹{{ "%.0f"|format(total) }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

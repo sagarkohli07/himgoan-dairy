@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.order_id }} - Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt"></i> Order #{{ order.order_id }}</h2>
+    <div>
+        {% if order.status == 'Pending' %}<span class="badge bg-warning fs-6">{{ order.status }}</span>
+        {% elif order.status == 'Accepted' %}<span class="badge bg-success fs-6">{{ order.status }}</span>
+        {% elif order.status == 'Rejected' %}<span class="badge bg-danger fs-6">{{ order.status }}</span>
+        {% elif order.status == 'Delivered' %}<span class="badge bg-info fs-6">{{ order.status }}</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Order Items</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product (EN)</th>
+                            <th>Product (HI)</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.product_name_en }}</td>
+                            <td>{{ item.product_name_hi }}</td>
+                            <td>₹{{ "%.0f"|format(item.price) }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ "%.0f"|format(item.price * item.quantity) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                            <td><strong class="text-primary">₹{{ "%.0f"|format(order.total_amount) }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        {% if order.status == 'Pending' %}
+        <div class="card shadow-sm mb-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Order Action Required</h5>
+            </div>
+            <div class="card-body">
+                <p>This order is pending. Please accept or reject:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form method="POST" action="{{ url_for('admin_accept_order', order_id=order.id) }}">
+                            <div class="mb-3">
+                                <label class="form-label">Admin Notes (Optional)</label>
+                                <textarea class="form-control" name="admin_notes" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-check-circle"></i> Accept Order
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form method="POST" action="{{ url_for('admin_reject_order', order_id=order.id) }}" 
+                              onsubmit="return confirm('Reject order? Stock will be restored.');">
+                            <div class="mb-3">
+                                <label class="form-label">Rejection Reason (Required)</label>
+                                <textarea class="form-control" name="admin_notes" rows="2" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-x-circle"></i> Reject Order
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif order.status == 'Accepted' %}
+        <div class="card shadow-sm mb-4 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Order Accepted</h5>
+            </div>
+            <div class="card-body">
+                <p>This order has been accepted. Mark as delivered when completed:</p>
+                <form method="POST" action="{{ url_for('admin_deliver_order', order_id=order.id) }}">
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-truck"></i> Mark as Delivered
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% elif order.status == 'Rejected' %}
+        <div class="alert alert-danger">
+            <i class="bi bi-x-circle"></i> <strong>Order rejected.</strong> Stock restored.
+        </div>
+        {% elif order.status == 'Delivered' %}
+        <div class="alert alert-info">
+            <i class="bi bi-truck"></i> <strong>Order delivered.</strong>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Customer Info</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong><br>{{ order.customer_name }}</p>
+                <p><strong>Email:</strong><br>{{ order.email }}</p>
+                <p><strong>Phone:</strong><br>{{ order.phone }}</p>
+                <p><strong>Address:</strong><br>{{ order.address }}</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Order Info</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Order ID:</strong><br><span class="h5 text-primary">{{ order.order_id }}</span></p>
+                <p><strong>Date:</strong><br>{{ order.order_date.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                <p><strong>Updated:</strong><br>{{ order.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                <p class="mb-0"><strong>Total:</strong><br>
+                    <span class="h4 text-primary">₹{{ "%.0f"|format(order.total_amount) }}</span>
+                </p>
+                {% if order.admin_notes %}
+                <hr>
+                <p><strong>Admin Notes:</strong><br>
+                <span class="text-muted">{{ order.admin_notes }}</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('admin_orders') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Orders
+    </a>
+</div>
+
+{% endblock %}
