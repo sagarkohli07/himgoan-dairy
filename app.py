@@ -555,7 +555,7 @@ def init_db():
     """Initialize database with products"""
     with app.app_context():
         db.create_all()
-
+        
         if Product.query.count() == 0:
             products = [
                 Product(
@@ -629,7 +629,7 @@ def init_db():
                     category="eggs"
                 )
             ]
-
+            
             db.session.bulk_save_objects(products)
             db.session.commit()
             print("✅ Database initialized with HimGaon Dairy products")
@@ -637,9 +637,13 @@ def init_db():
             print("✅ Database already contains products")
 
 
+# Initialize database on startup (works with Gunicorn too)
+with app.app_context():
+    init_db()
+
+
 # ==================== MAIN ====================
 
 if __name__ == '__main__':
-    init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
